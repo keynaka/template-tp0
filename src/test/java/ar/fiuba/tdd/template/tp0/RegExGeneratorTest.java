@@ -18,15 +18,12 @@ public class RegExGeneratorTest {
         // force matching the beginning and the end of the strings
         Pattern pattern = Pattern.compile("^" + regEx + "$");
         return true;
-        //probando
- //       return results
- //               .stream()
-   //             .reduce(true,
-     //               (acc, item) -> {
-       //                 Matcher matcher = pattern.matcher(item);
-         //               return acc && matcher.find();
-           //         },
-             //       (item1, item2) -> item1 && item2);
+//        return results
+//                .stream()
+//                .reduce(true,(acc, item) -> {
+//                        Matcher matcher = pattern.matcher(item);
+//                        return acc && matcher.find();
+//                    }, (item1, item2) -> item1 && item2);
     }
 
     //TODO: Uncomment these tests

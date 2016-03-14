@@ -8,11 +8,12 @@ public class RegExGenerator {
     private int maxLength;
 
     public RegExGenerator(int maxLength) {
-       this.maxLength = maxLength;
+        this.maxLength = maxLength;
     }
 
-
     public List<String> generate(String regEx, int numberOfResults) {
+
+        if (maxLength == 10) System.out.println("Hola mundo");
 
         return new ArrayList<String>() {
             {
