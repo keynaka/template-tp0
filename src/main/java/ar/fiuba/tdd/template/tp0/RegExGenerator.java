@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RegExGenerator {
 
-    private int maxLength;
+    private int maxLength = 10;
 
     public RegExGenerator(int maxLength) {
         this.maxLength = maxLength;
@@ -13,7 +13,10 @@ public class RegExGenerator {
 
     public List<String> generate(String regEx, int numberOfResults) {
 
-        if (maxLength == 10) System.out.println("Hola mundo");
+        if (maxLength == 10) {
+            System.out.println("Hola mundo");
+        }
+
 
         return new ArrayList<String>() {
             {
