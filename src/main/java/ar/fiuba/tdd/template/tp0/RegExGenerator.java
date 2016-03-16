@@ -5,8 +5,9 @@ import java.util.*;
 public class RegExGenerator {
 
     private int maxLength = 10;
-    private static char DOT = '.';
-    private static char BACKSLASH = '\\';
+    private static char ANYCHAR = '.';
+    private static char ESCAPE = '\\';
+    private static char ZERO_SAMECHAR = '?';
     String oneMatch = "";
     Random randomNumber;
     int position;
@@ -27,6 +28,7 @@ public class RegExGenerator {
         for (position = 0 ; position < regEx.length() ; position++) {
             this.analyzingDot(regEx);
             this.analyzingBackslash(regEx);
+            this.analyzingZeroOrSameCharSymbol(regEx);
         }
         matchedStrings.add(oneMatch);
 
@@ -34,16 +36,26 @@ public class RegExGenerator {
     }
 
     private void analyzingDot(String regEx) {
-        if (regEx.charAt(position) == DOT) {
+        if (regEx.charAt(position) == ANYCHAR) {
             int oneRandom = randomNumber.nextInt(256);
             oneMatch = oneMatch.concat(String.valueOf(Character.toChars(oneRandom)));
         }
     }
 
     private void analyzingBackslash(String regEx) {
-        if (regEx.charAt(position) == BACKSLASH) {
+        if (regEx.charAt(position) == ESCAPE) {
             position ++;
             oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position)));
+        }
+    }
+
+    private void analyzingZeroOrSameCharSymbol(String regEx) {
+        if (regEx.charAt(position) == ZERO_SAMECHAR) {
+            int oneRandom = randomNumber.nextInt(2);
+            if (oneRandom == 1){
+                oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position-1)));
+            }
+
         }
     }
 }
