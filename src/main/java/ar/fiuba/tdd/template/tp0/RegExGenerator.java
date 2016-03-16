@@ -42,8 +42,8 @@ public class RegExGenerator {
 
     private void analyzingBackslash(String regEx) {
         if (regEx.charAt(position) == BACKSLASH) {
-            oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position + 1)));
             position ++;
+            oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position)));
         }
     }
 }
