@@ -4,15 +4,15 @@ import java.util.*;
 
 public class RegExGenerator {
 
-    private int maxLength = 10;
     private static char ANYCHAR = '.';
     private static char ESCAPE = '\\';
     private static char ZERO_ONECHAR = '?';
-    //private static char ONE_LOTSCHAR = '+';
+    private static char ONE_LOTSCHAR = '+';
     //private static char ZERO_LOTSCHAR = '*';
     private static char CHARSETOPEN = '[';
     private static char CHARSETCLOSE = ']';
-
+    private int maxLength;
+    private int maxRepetition = 10;
     private String oneMatch = "";
     private String allAscii = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random randomNumber;
@@ -20,6 +20,7 @@ public class RegExGenerator {
     private String charsIncluded = "";
     private boolean isSet;
     private boolean usedQuantifier;
+    private boolean lastPosition;
 
     public RegExGenerator(int maxLength) {
         this.randomNumber = new Random();
@@ -67,45 +68,56 @@ public class RegExGenerator {
             position ++;
             while (regEx.charAt(position) != CHARSETCLOSE) {
                 charsIncluded = charsIncluded.concat(String.valueOf(regEx.charAt(position)));
-                charsIncluded = String.valueOf(charsIncluded.charAt(0)); //probando
                 position ++;
             }
         } else {
-            //caso en el que es un caracter solo
             charsIncluded = charsIncluded.concat(String.valueOf(regEx.charAt(position)));
         }
     }
 
     private void quantifierZeroOrSameCharSymbol(String regEx) {
-        if (regEx.charAt(position + 1) == ZERO_ONECHAR) {
-            position ++;
-            usedQuantifier = true;
-            int oneRandom = randomNumber.nextInt(2);
-            if (oneRandom == 1) {
-                //oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position-1)));
-                this.addOneChar();
+        if (! lastPosition) {
+            if (regEx.charAt(position + 1) == ZERO_ONECHAR) {
+                usedQuantifier = true;
+                int oneRandom = randomNumber.nextInt(2);
+                if (oneRandom == 1) {
+                    this.addOneChar();
+                }
             }
         }
     }
 
-    private void addOneChar() {
-        if (! isSet) {
-            oneMatch = oneMatch.concat(charsIncluded); //ultimo que hice, intentando agregar al match, el caracter.
-        } else {
-            int oneRandom = randomNumber.nextInt(charsIncluded.length());
-            oneMatch = oneMatch.concat(String.valueOf(charsIncluded.charAt(oneRandom)));
+    private void quantifierOneOrLotsCharsSymbol(String regEx) {
+        if (! lastPosition) {
+            if (regEx.charAt(position + 1) == ONE_LOTSCHAR) {
+                usedQuantifier = true;
+                int numberOfRepetitions = randomNumber.nextInt(maxRepetition) + 1;
+                for (int repetition = 0 ; repetition < numberOfRepetitions ; repetition ++) {
+                    this.addOneChar();
+                }
+            }
         }
     }
 
     private void writing(String regEx) {
         usedQuantifier = false;
-        //aca van todos los cuantificadores uno abajo del otro
+        lastPosition = (position == (regEx.length() - 1));
         this.quantifierZeroOrSameCharSymbol(regEx);
+        this.quantifierOneOrLotsCharsSymbol(regEx);
 
-        if (! usedQuantifier) {
+        if (usedQuantifier) {
+            position ++;
+        } else {
             this.addOneChar();
         }
     }
 
-}//nota antes de empezar, esta todo en estado OK el build, hay q ver como hacer con el tema de los quantificadores
-//en que momento escribir las cosas, o sea en q momento hacer el concat al oneMatch
+    private void addOneChar() {
+        if (! isSet) {
+            oneMatch = oneMatch.concat(charsIncluded);
+        } else {
+            int oneRandom = randomNumber.nextInt(charsIncluded.length());
+            oneMatch = oneMatch.concat(String.valueOf(charsIncluded.charAt(oneRandom)));
+        }
+    }
+}
