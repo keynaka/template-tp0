@@ -7,27 +7,24 @@ public class RegExGenerator {
     private int maxLength = 10;
     private static char ANYCHAR = '.';
     private static char ESCAPE = '\\';
-    //private static char ZERO_ONECHAR = '?';
+    private static char ZERO_ONECHAR = '?';
     //private static char ONE_LOTSCHAR = '+';
     //private static char ZERO_LOTSCHAR = '*';
-    //private static char CHARSETOPEN = '[';
-    //private static char CHARSETCLOSE = ']';
+    private static char CHARSETOPEN = '[';
+    private static char CHARSETCLOSE = ']';
 
-    String oneMatch = "";
-    String allAscii = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    Random randomNumber;
-    int position;
-    //ArrayList<Character> quantifiers;
-    String charsIncluded = "";
+    private String oneMatch = "";
+    private String allAscii = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private Random randomNumber;
+    private int position;
+    private String charsIncluded = "";
+    private boolean isSet;
+    private boolean usedQuantifier;
 
     public RegExGenerator(int maxLength) {
         this.randomNumber = new Random();
         this.maxLength = maxLength;
         this.position = 0;
-        //this.quantifiers = new ArrayList<Character>();
-        //this.quantifiers.add(ZERO_ONECHAR);
-        //this.quantifiers.add(ZERO_LOTSCHAR);
-        //this.quantifiers.add(ONE_LOTSCHAR);
     }
 
     public List<String> generate(String regEx, int numberOfResults) {
@@ -38,70 +35,77 @@ public class RegExGenerator {
         }
 
         for (position = 0 ; position < regEx.length() ; position++) {
+            charsIncluded = "";
             this.analyzingEscape(regEx);
-            //this.analyzingAnyCharSymbol(regEx);
-            //this.analyzingZeroOrSameCharSymbol(regEx);
-            //this.analyzingCharacterSetOrCharacter(regEx);
+            this.analyzingAnyCharSymbol(regEx);
+            this.writing(regEx);
         }
         matchedStrings.add(oneMatch);
 
         return matchedStrings;
     }
 
-    private void analyzingAnyCharSymbol(String regEx) {
-        if (regEx.charAt(position) == ANYCHAR) {
-            Character oneRandomChar = allAscii.charAt(randomNumber.nextInt(allAscii.length()));
-            charsIncluded = charsIncluded.concat(String.valueOf(oneRandomChar)); //ultimo q hice
-        }else{
-            charsIncluded = charsIncluded.concat(String.valueOf(regEx.charAt(position)));
-        }
-    }
-
     private void analyzingEscape(String regEx) {
-        charsIncluded = "";
         if (regEx.charAt(position) == ESCAPE) {
             position ++;
         }
-        this.analyzingAnyCharSymbol(regEx);
-        oneMatch = oneMatch.concat(charsIncluded);
     }
-/*
-    private void analyzingZeroOrSameCharSymbol(String regEx) {
-        if (regEx.charAt(position) == ZERO_ONECHAR) {
-            int oneRandom = randomNumber.nextInt(2);
-            if (oneRandom == 1){
-                oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position-1)));
-            }
 
+    private void analyzingAnyCharSymbol(String regEx) {
+        if (regEx.charAt(position) == ANYCHAR) {
+            isSet = true;
+            charsIncluded = allAscii;
+        } else {
+            this.analyzingCharacterSetOrCharacter(regEx);
         }
     }
 
     private void analyzingCharacterSetOrCharacter(String regEx) {
+        isSet = false;
         if (regEx.charAt(position) == CHARSETOPEN) {
+            isSet = true;
             position ++;
             while (regEx.charAt(position) != CHARSETCLOSE) {
-                charsIncluded.add(String.valueOf(regEx.charAt(position)));
+                charsIncluded = charsIncluded.concat(String.valueOf(regEx.charAt(position)));
+                charsIncluded = String.valueOf(charsIncluded.charAt(0)); //probando
                 position ++;
             }
-        }else {
+        } else {
             //caso en el que es un caracter solo
-            charsIncluded.add(String.valueOf(regEx.charAt(position)));
+            charsIncluded = charsIncluded.concat(String.valueOf(regEx.charAt(position)));
         }
-        if (!charsIncluded.isEmpty()) {
-            this.processCharacterSetOrLiteral(regEx, charsIncluded);
-        }
-
     }
 
-    private void processCharacterSetOrLiteral(String regEx, ArrayList<String> charsIncluded) {
-        String oneRandomChar = charsIncluded.get(randomNumber.nextInt(charsIncluded.size()));
-        oneMatch = oneMatch.concat(oneRandomChar);
-        //en las 2 lineas de arriba, ya se hizo en el caso que no es un cuantificador lo q le sigue
-        //entonces si le sigue un quantificador, dependiendo cual, hay q repetirlo, sino ya no hace nada mas
-
-        if (this.quantifiers.contains(regEx.charAt(position + 1))) {
-            //hay q hacer cada quantificador
+    private void quantifierZeroOrSameCharSymbol(String regEx) {
+        if (regEx.charAt(position + 1) == ZERO_ONECHAR) {
+            position ++;
+            usedQuantifier = true;
+            int oneRandom = randomNumber.nextInt(2);
+            if (oneRandom == 1) {
+                //oneMatch = oneMatch.concat(String.valueOf(regEx.charAt(position-1)));
+                this.addOneChar();
+            }
         }
-        position ++;
-    }*/
-}
+    }
+
+    private void addOneChar() {
+        if (! isSet) {
+            oneMatch = oneMatch.concat(charsIncluded); //ultimo que hice, intentando agregar al match, el caracter.
+        } else {
+            int oneRandom = randomNumber.nextInt(charsIncluded.length());
+            oneMatch = oneMatch.concat(String.valueOf(charsIncluded.charAt(oneRandom)));
+        }
+    }
+
+    private void writing(String regEx) {
+        usedQuantifier = false;
+        //aca van todos los cuantificadores uno abajo del otro
+        this.quantifierZeroOrSameCharSymbol(regEx);
+
+        if (! usedQuantifier) {
+            this.addOneChar();
+        }
+    }
+
+}//nota antes de empezar, esta todo en estado OK el build, hay q ver como hacer con el tema de los quantificadores
+//en que momento escribir las cosas, o sea en q momento hacer el concat al oneMatch
