@@ -8,7 +8,7 @@ public class RegExGenerator {
     private static char ESCAPE = '\\';
     private static char ZERO_ONECHAR = '?';
     private static char ONE_LOTSCHAR = '+';
-    //private static char ZERO_LOTSCHAR = '*';
+    private static char ZERO_LOTSCHAR = '*';
     private static char CHARSETOPEN = '[';
     private static char CHARSETCLOSE = ']';
     private int maxLength;
@@ -87,11 +87,14 @@ public class RegExGenerator {
         }
     }
 
-    private void quantifierOneOrLotsCharsSymbol(String regEx) {
+    private void quantifierOneLotsCharsOrZeroLotsCharsSymbols(String regEx) {
         if (! lastPosition) {
-            if (regEx.charAt(position + 1) == ONE_LOTSCHAR) {
+            if ((regEx.charAt(position + 1) == ONE_LOTSCHAR) || (regEx.charAt(position + 1) == ZERO_LOTSCHAR)) {
                 usedQuantifier = true;
-                int numberOfRepetitions = randomNumber.nextInt(maxRepetition) + 1;
+                int numberOfRepetitions = randomNumber.nextInt(maxRepetition);
+                if (regEx.charAt(position + 1) == ONE_LOTSCHAR) {
+                    numberOfRepetitions ++;
+                }
                 for (int repetition = 0 ; repetition < numberOfRepetitions ; repetition ++) {
                     this.addOneChar();
                 }
@@ -103,7 +106,7 @@ public class RegExGenerator {
         usedQuantifier = false;
         lastPosition = (position == (regEx.length() - 1));
         this.quantifierZeroOrSameCharSymbol(regEx);
-        this.quantifierOneOrLotsCharsSymbol(regEx);
+        this.quantifierOneLotsCharsOrZeroLotsCharsSymbols(regEx);
 
         if (usedQuantifier) {
             position ++;

@@ -67,5 +67,9 @@ public class RegExGeneratorTest {
         assertTrue(validate("[abc]+", 1));
     }
 
+    @Test
+    public void testCharacterSetWithQuantifierOneOrMoreChars() {
+        assertTrue(validate("[abc]*", 1));
+    }
     // TODO: Add more tests!!!
 }
