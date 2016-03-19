@@ -71,5 +71,68 @@ public class RegExGeneratorTest {
     public void testCharacterSetWithQuantifierOneOrMoreChars() {
         assertTrue(validate("[abc]*", 1));
     }
+
+    @Test
+    public void testEscapedDot() {
+        assertTrue(validate("\\.", 1));
+    }
+
+    @Test
+    public void testJustLiterals() {
+        assertTrue(validate("helloworld", 1));
+    }
+
+    @Test
+    public void testDotPlus() {
+        assertTrue(validate(".+", 1));
+    }
+
+    @Test
+    public void testDotAsterisk() {
+        assertTrue(validate(".*", 1));
+    }
+
+    @Test
+    public void testLiteralSetInterrogation() {
+        assertTrue(validate("hello[abc]?", 1));
+    }
+
+    @Test
+    public void testLiteralPlus() {
+        assertTrue(validate("k+", 1));
+    }
+
+    @Test
+    public void testLiteralAsterisk() {
+        assertTrue(validate("k*", 1));
+    }
+
+    @Test
+    public void testEscapedSquareBracket() {
+        assertTrue(validate("\\[", 1));
+    }
+
+    @Test
+    public void testEscapedAsterisk() {
+        assertTrue(validate("\\*", 1));
+    }
+
+    @Test
+    public void testEscapedPlus() {
+        assertTrue(validate("\\+", 1));
+    }
+
+    @Test
+    public void testEscapedInterrogation() {
+        assertTrue(validate("\\?", 1));
+    }
+
+    @Test
+    public void testAll() {
+        assertTrue(validate("\\*..+a?[xyz]*good", 1));
+    }
+
+
+
     // TODO: Add more tests!!!
 }

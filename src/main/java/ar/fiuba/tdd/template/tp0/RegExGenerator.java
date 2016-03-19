@@ -18,6 +18,7 @@ public class RegExGenerator {
     private Random randomNumber;
     private int position;
     private String charsIncluded = "";
+    private boolean escaped;
     private boolean isSet;
     private boolean usedQuantifier;
     private boolean lastPosition;
@@ -47,13 +48,15 @@ public class RegExGenerator {
     }
 
     private void analyzingEscape(String regEx) {
+        escaped = false;
         if (regEx.charAt(position) == ESCAPE) {
             position ++;
+            escaped = true;
         }
     }
 
     private void analyzingAnyCharSymbol(String regEx) {
-        if (regEx.charAt(position) == ANYCHAR) {
+        if (regEx.charAt(position) == ANYCHAR && ! escaped) {
             isSet = true;
             charsIncluded = allAscii;
         } else {
@@ -63,7 +66,7 @@ public class RegExGenerator {
 
     private void analyzingCharacterSetOrCharacter(String regEx) {
         isSet = false;
-        if (regEx.charAt(position) == CHARSETOPEN) {
+        if (regEx.charAt(position) == CHARSETOPEN && ! escaped) {
             isSet = true;
             position ++;
             while (regEx.charAt(position) != CHARSETCLOSE) {
