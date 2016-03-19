@@ -13,7 +13,7 @@ public class RegExGenerator {
     private static char CHARSETCLOSE = ']';
     private int maxLength;
     private String oneMatch = "";
-    private String allAscii = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private String allAscii = "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+-=`ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random randomNumber;
     private int position;
     private String charsIncluded = "";
