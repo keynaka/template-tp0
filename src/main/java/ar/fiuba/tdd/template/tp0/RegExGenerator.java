@@ -12,7 +12,6 @@ public class RegExGenerator {
     private static char CHARSETOPEN = '[';
     private static char CHARSETCLOSE = ']';
     private int maxLength;
-    private int maxRepetition = 10;
     private String oneMatch = "";
     private String allAscii = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private Random randomNumber;
@@ -31,20 +30,26 @@ public class RegExGenerator {
 
     public List<String> generate(String regEx, int numberOfResults) {
         ArrayList<String> matchedStrings = new ArrayList<String>();
+        int resultsAdded = 0;
 
-        if (maxLength == 10) {
-            System.out.println("todavia no lo use");
+        while (resultsAdded < numberOfResults) {
+            oneMatch = "";
+            this.makeOneMatch(regEx);
+            if (! matchedStrings.contains(oneMatch)) {
+                matchedStrings.add(oneMatch);
+                resultsAdded ++;
+            }
         }
+        return matchedStrings;
+    }
 
+    private void makeOneMatch(String regEx) {
         for (position = 0 ; position < regEx.length() ; position++) {
             charsIncluded = "";
             this.analyzingEscape(regEx);
             this.analyzingAnyCharSymbol(regEx);
             this.writing(regEx);
         }
-        matchedStrings.add(oneMatch);
-
-        return matchedStrings;
     }
 
     private void analyzingEscape(String regEx) {
@@ -94,7 +99,7 @@ public class RegExGenerator {
         if (! lastPosition) {
             if ((regEx.charAt(position + 1) == ONE_LOTSCHAR) || (regEx.charAt(position + 1) == ZERO_LOTSCHAR)) {
                 usedQuantifier = true;
-                int numberOfRepetitions = randomNumber.nextInt(maxRepetition);
+                int numberOfRepetitions = randomNumber.nextInt(maxLength);
                 if (regEx.charAt(position + 1) == ONE_LOTSCHAR) {
                     numberOfRepetitions ++;
                 }

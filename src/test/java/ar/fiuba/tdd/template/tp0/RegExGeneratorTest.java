@@ -27,9 +27,6 @@ public class RegExGeneratorTest {
                         (item1, item2) -> item1 && item2);
     }
 
-
-    //TODO: Uncomment these tests
-
     @Test
     public void testAnyCharacter() {
         assertTrue(validate(".", 1));
@@ -39,7 +36,6 @@ public class RegExGeneratorTest {
     public void testMultipleCharacters() {
         assertTrue(validate("...", 1));
     }
-
 
     @Test
     public void testLiteral() {
@@ -55,7 +51,6 @@ public class RegExGeneratorTest {
     public void testZeroOrOneCharacter() {
         assertTrue(validate("\\@.h?", 1));
     }
-
 
     @Test
     public void testCharacterSet() {
@@ -132,7 +127,53 @@ public class RegExGeneratorTest {
         assertTrue(validate("\\*..+a?[xyz]*good", 1));
     }
 
+    @Test
+    public void testMultipleCharactersFifteenMatches() {
+        assertTrue(validate("...", 15));
+    }
 
+    @Test
+    public void testAnyCharacterFiveMatches() {
+        assertTrue(validate(".", 5));
+    }
 
-    // TODO: Add more tests!!!
+    @Test
+    public void testAnyCharacterTwentyMatches() {
+        assertTrue(validate(".", 20));
+    }
+
+    @Test
+    public void testZeroOrOneCharacterFiveMatches() {
+        assertTrue(validate("\\@.h?", 5));
+    }
+
+    @Test
+    public void testCharacterSetThreeMatches() {
+        assertTrue(validate("[abc]", 3));
+    }
+
+    @Test
+    public void testLiteralAsteriskTenMatches() {
+        assertTrue(validate("k*", 10));
+    }
+
+    @Test
+    public void testLiteralPlusTenMatches() {
+        assertTrue(validate("k+", 10));
+    }
+
+    @Test
+    public void testDotAsterisk20Matches() {
+        assertTrue(validate(".*", 20));
+    }
+
+    @Test
+    public void testLiteralSetInterrogationFourMatches() {
+        assertTrue(validate("hello[abc]?", 4));
+    }
+
+    @Test
+    public void testAllTenMatches() {
+        assertTrue(validate("\\*..+a?[xyz]*good", 10));
+    }
 }
